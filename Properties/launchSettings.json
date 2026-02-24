@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Template2PPTX": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7189",
+      "launchBrowser": false
+    }
+  }
+}

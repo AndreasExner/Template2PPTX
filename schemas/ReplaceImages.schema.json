@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReplaceImages",
+  "description": "POST /api/ReplaceImages — Replaces images in a PPTX template by shape name. Send as multipart/form-data. No JSON body is needed — the schema below documents the form fields.\n\nForm fields:\n  - 'template' (required): The .pptx template file.\n  - One or more image files where the form-field name equals the shape name in the presentation.\n\nThe image inside each matched shape is replaced while preserving the exact position and dimensions on the slide. Shape name matching is case-insensitive.\n\nSupported image formats: PNG, JPEG, GIF, BMP, TIFF, SVG.",
+  "type": "object",
+  "description_of_form_fields": {
+    "template": {
+      "type": "file",
+      "required": true,
+      "description": "The .pptx template file to modify.",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    },
+    "<shapeName>": {
+      "type": "file",
+      "required": true,
+      "description": "An image file to replace the picture in the shape with the given name. The form-field name must match the shape name in PowerPoint's Selection Pane (case-insensitive). Multiple image fields can be provided to replace multiple shapes in one request.",
+      "contentType": "image/png | image/jpeg | image/gif | image/bmp | image/tiff | image/svg+xml"
+    }
+  },
+  "examples_curl": [
+    "curl -X POST /api/ReplaceImages -F \"template=@deck.pptx\" -F \"Picture 3=@logo.png\" -F \"Picture 5=@photo.jpg\"",
+    "curl -X POST /api/ReplaceImages -F \"template=@report.pptx\" -F \"Grafik 1=@chart-screenshot.png\""
+  ]
+}

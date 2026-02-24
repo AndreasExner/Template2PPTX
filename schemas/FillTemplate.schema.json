@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FillTemplate",
+  "description": "POST /api/FillTemplate — Replaces text placeholders in specific shapes of a PPTX template. Send as multipart/form-data with a 'template' file field (.pptx) and a 'placeholders' text field containing this JSON.",
+  "type": "object",
+  "additionalProperties": {
+    "$ref": "#/definitions/shapeReplacements"
+  },
+  "minProperties": 1,
+  "definitions": {
+    "shapeReplacements": {
+      "type": "object",
+      "description": "Key-value pairs where each key is a placeholder string found in the shape's text (e.g. '{{Title}}') and the value is the replacement text.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1
+    }
+  },
+  "examples": [
+    {
+      "Title 1": {
+        "{{Title}}": "Quarterly Report 2026"
+      },
+      "Subtitle 2": {
+        "{{Subtitle}}": "Finance Department",
+        "{{Date}}": "24.02.2026"
+      },
+      "Content Placeholder 3": {
+        "{{Body}}": "Lorem ipsum dolor sit amet."
+      }
+    }
+  ]
+}

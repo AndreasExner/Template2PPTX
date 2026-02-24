@@ -1,0 +1,228 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Template2PPTX API",
+    "description": "Azure Functions API for filling PPTX templates — replace text placeholders, fill charts with data, and replace images. All endpoints accept multipart/form-data with a .pptx template file and return the modified .pptx.",
+    "version": "1.0.0"
+  },
+  "host": "ttemplate2pptx.azurewebsites.net",
+  "basePath": "/api",
+  "schemes": ["https"],
+  "consumes": ["multipart/form-data"],
+  "produces": ["application/vnd.openxmlformats-officedocument.presentationml.presentation"],
+  "securityDefinitions": {
+    "function_key": {
+      "type": "apiKey",
+      "name": "code",
+      "in": "query",
+      "description": "Azure Functions host key passed as ?code=<key> query parameter."
+    }
+  },
+  "security": [
+    {
+      "function_key": []
+    }
+  ],
+  "paths": {
+    "/FillTemplate": {
+      "post": {
+        "operationId": "FillTemplate",
+        "summary": "Replace text placeholders in specific shapes",
+        "description": "Replaces text placeholders in named shapes of a PPTX template. Shapes are identified by their name (visible in PowerPoint's Selection Pane). Supports regular shapes, grouped shapes, and table cells inside graphic frames. Shape name matching is case-insensitive.",
+        "parameters": [
+          {
+            "name": "template",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The .pptx template file to modify."
+          },
+          {
+            "name": "placeholders",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "JSON object keyed by shape name. Each value is an object of placeholder→replacement pairs. Example: {\"Title 1\":{\"{{Title}}\":\"Hello\"},\"Subtitle 2\":{\"{{Sub}}\":\"World\"}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The modified .pptx file with text placeholders replaced.",
+            "schema": {
+              "type": "file"
+            },
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "attachment; filename=filled.pptx"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — missing template, invalid JSON, empty placeholders, or corrupt PPTX.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/FillChart": {
+      "post": {
+        "operationId": "FillChart",
+        "summary": "Fill a chart with categories and series data",
+        "description": "Updates a chart in a PPTX template with new category labels and series data. The chart is identified by its shape name (visible in PowerPoint's Selection Pane). Updates both the chart XML cache and the embedded Excel workbook so the chart remains editable in PowerPoint. Shape name matching is case-insensitive. If the shape name is not found, the response includes a list of all available chart shape names.",
+        "parameters": [
+          {
+            "name": "template",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The .pptx template file containing the chart to fill."
+          },
+          {
+            "name": "chartData",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "JSON object with chart data. See ChartDataInput schema."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The modified .pptx file with chart data filled.",
+            "schema": {
+              "type": "file"
+            },
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "attachment; filename=chart-filled.pptx"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — missing template, invalid JSON, missing shapeName/categories/series, shape not found, or corrupt PPTX.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ReplaceImages": {
+      "post": {
+        "operationId": "ReplaceImages",
+        "summary": "Replace images in picture shapes by shape name",
+        "description": "Replaces images in named picture shapes (p:pic) of a PPTX template. Each uploaded image file's form-field name must match a shape name in the presentation (visible in PowerPoint's Selection Pane). The image is replaced while preserving the exact position and dimensions of the original shape on the slide. Shape name matching is case-insensitive. If shapes are not found, the response log includes a list of all available picture shape names. Supported image formats: PNG, JPEG, GIF, BMP, TIFF, SVG.",
+        "parameters": [
+          {
+            "name": "template",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The .pptx template file to modify."
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "One or more image files. The form-field name of each file must match the target shape name in the presentation (e.g. 'Picture 3', 'Grafik 1'). Multiple image fields can be sent in a single request to replace multiple shapes."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The modified .pptx file with images replaced.",
+            "schema": {
+              "type": "file"
+            },
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "attachment; filename=images-replaced.pptx"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — missing template, no image files provided, or corrupt PPTX.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "type": "string",
+      "description": "Plain-text error message describing what went wrong."
+    },
+    "ChartDataInput": {
+      "type": "object",
+      "required": ["shapeName", "categories", "series"],
+      "properties": {
+        "shapeName": {
+          "type": "string",
+          "description": "The name of the chart shape on the slide (visible in PowerPoint's Selection Pane). Case-insensitive matching.",
+          "example": "Content Placeholder 7"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Category labels for the chart (X-axis labels or pie slice names).",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Q1", "Q2", "Q3", "Q4"]
+        },
+        "series": {
+          "type": "array",
+          "description": "One or more data series to populate the chart.",
+          "items": {
+            "$ref": "#/definitions/SeriesInput"
+          }
+        }
+      }
+    },
+    "SeriesInput": {
+      "type": "object",
+      "required": ["name", "values"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name of the data series (shown in the chart legend).",
+          "example": "Revenue"
+        },
+        "values": {
+          "type": "array",
+          "description": "Numeric data points. Should have the same length as 'categories'.",
+          "items": {
+            "type": "number"
+          },
+          "example": [42.5, 38.1, 55.0, 61.3]
+        }
+      }
+    },
+    "PlaceholdersInput": {
+      "type": "object",
+      "description": "JSON object keyed by shape name. Each value is an object mapping placeholder strings to their replacement values. Shape names are matched case-insensitively.",
+      "additionalProperties": {
+        "type": "object",
+        "description": "Key-value pairs where each key is a placeholder string found in the shape's text and the value is the replacement text.",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "Title 1": {
+          "{{Title}}": "Quarterly Report 2026"
+        },
+        "Subtitle 2": {
+          "{{Subtitle}}": "Finance Department",
+          "{{Date}}": "24.02.2026"
+        }
+      }
+    }
+  }
+}
