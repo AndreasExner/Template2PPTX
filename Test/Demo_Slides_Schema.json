@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FillPresentation",
+  "description": "Befüllt das PPTX-Template mit Texten, Bildern, Tabellenwerten, SmartArt-Listen und Chartdaten.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "placeholders": {
+      "type": "object",
+      "description": "Key-Value Paare für alle Textplatzhalter im Deck.",
+      "additionalProperties": false,
+      "properties": {
+        "Title": { "type": "string", "description": "Slide 1: {{Title}}" },
+        "Subtitle": { "type": "string", "description": "Slide 1/2/3: {{Subtitle}}" },
+        "Date": { "type": "string", "description": "Slide 1/2/3: {{Date}} (beliebiges Datumsformat)" },
+
+        "Overall-Score": { "type": "string", "description": "Slide 2: **{{Overall-Score}}**" },
+        "Segment-Ranking": { "type": "string", "description": "Slide 2: {{Segment-Ranking}}" },
+
+        "Strength_1": { "type": "string" },
+        "Strength_2": { "type": "string" },
+        "Strength_3": { "type": "string" },
+        "Weakness_1": { "type": "string" },
+        "Weakness_2": { "type": "string" },
+        "Weakness_3": { "type": "string" },
+
+        "Purchase-Investment-Recommendation": { "type": "string" },
+        "Disclaimer-Data-Source": { "type": "string" },
+
+        "Market": { "type": "string", "description": "Slide 2/3:{{Market}}**" },
+        "Model-Name": { "type": "string", "description": "Slide 2/3: **{{Model-Name}}**" },
+        "Trim-Level": { "type": "string" },
+
+        "Segment": { "type": "string" },
+        "Price-Range": { "type": "string" },
+        "Items-Sold": { "type": "string" },
+        "Market-Share-In-Segment": { "type": "string" },
+
+        "Reliability-Score": { "type": "string" },
+        "Institutional-Scores": { "type": "string" },
+        "Recalls-Warranty": { "type": "string" },
+        "Owner‑Feedback": { "type": "string" },
+        "Safety-Score": { "type": "string" },
+        "Crash-Test-Results": { "type": "string" },
+        "IIHS-NHTSA": { "type": "string" },
+        "ADAS-Coverage": { "type": "string" },
+
+        "Differentiation": { "type": "string", "description": "Slide 5: {{Differentiation}}" },
+
+        "TCO-Index-Label": { "type": "string" },
+        "TCO-Index-Value": { "type": "string" },
+        "TCO-5Y-Label": { "type": "string" },
+        "TCO-5Y-Value": { "type": "string" },
+        "Cost-per-Month-Label": { "type": "string" },
+        "Cost-per-Month-Value": { "type": "string" },
+        "Depreciation-Label": { "type": "string" },
+        "Depreciation-Value": { "type": "string" },
+
+        "TCO-Index": { "type": "string", "description": "SmartArt Bullet 1" },
+        "TCO": { "type": "string", "description": "SmartArt Bullet 2" },
+        "Cost-per-km": { "type": "string", "description": "SmartArt Bullet 3" }
+      },
+      "required": ["Title", "Market", "Model-Name"]
+    },
+
+    "images": {
+      "type": "object",
+      "description": "Bilder nach Feldnamen; typischerweise das Fahrzeugbild auf den Bewertungsfolien.",
+      "additionalProperties": false,
+      "properties": {
+        "HeroImage": {
+          "type": "string",
+          "format": "uri",
+          "description": "Bildquelle (Dateipfad, data-URI oder URL) für das Fahrzeugbild (Slide 2/3)."
+        }
+      }
+    },
+
+    "charts": {
+      "type": "object",
+      "description": "Daten für die drei Diagramme (Slides 3, 5, 6).",
+      "additionalProperties": false,
+      "properties": {
+        "ValueForMoney": {
+          "type": "object",
+          "description": "Slide 3 Chart: Preis/Ausstattung/Value/Index.",
+          "required": ["categories", "series"],
+          "properties": {
+            "categories": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1,
+              "description": "z. B. ['Preispositionierung', 'Ausstattungsvorteil', 'Value‑Rating', 'Value‑for‑Money‑Index']"
+            },
+            "series": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["name", "values"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string", "description": "Legendenname, z. B. 'Rating'" },
+                  "values": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 1,
+                    "description": "Muss zur Länge von 'categories' passen."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "TechnologyEntertainment": {
+          "type": "object",
+          "description": "Slide 5 Chart: Digital Keys, Comfort, Connectivity, Infotainment.",
+          "required": ["categories", "series"],
+          "properties": {
+            "categories": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            },
+            "series": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["name", "values"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string" },
+                  "values": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "TCOBreakdown": {
+          "type": "object",
+          "description": "Slide 6 Chart: Depreciation, Energy/Fuel, Insurance, Maintenance, Tax.",
+          "required": ["categories", "series"],
+          "properties": {
+            "categories": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            },
+            "series": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["name", "values"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string" },
+                  "values": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["placeholders"]
+}

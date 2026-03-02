@@ -1,0 +1,28 @@
+{
+  "shapeName": "Slide3_Chart1",
+  "categories": [
+    "Overall Score",
+    "Reliability",
+    "Safety",
+    "Technology",
+    "Value for Money"
+  ],
+  "series": [
+    {
+      "name": "Our Model",
+      "values": [85, 88, 92, 78, 81]
+    },
+    {
+      "name": "Competitor A",
+      "values": [79, 82, 88, 85, 74]
+    },
+    {
+      "name": "Competitor B",
+      "values": [72, 68, 80, 90, 70]
+    },
+    {
+      "name": "Competitor C",
+      "values": [65, 71, 75, 60, 82]
+    }
+  ]
+}

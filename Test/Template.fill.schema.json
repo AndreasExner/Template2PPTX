@@ -1,0 +1,772 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CLevel_Template_Demo_FillRequest",
+  "description": "Kombiniertes JSON zum Befüllen von Template_Demo.pptx: Text-Platzhalter (FillTemplate), Diagramme (FillChart) und Bildersetzung (ReplaceImages).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "placeholders"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional: Metadaten zur Datenlage (Quellenanzahl, Aktualität, Lücken)."
+    },
+    "placeholders": {
+      "type": "object",
+      "description": "Entspricht dem Body-Feld 'placeholders' für POST /api/FillTemplate: { <shapeName>: { <placeholder>: <text> } }.",
+      "additionalProperties": false,
+      "properties": {
+        "Slide1_Titel": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Title}}": {
+              "type": "string",
+              "description": "Ersetzt {{Title}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide1_Subtitle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Date}}": {
+              "type": "string",
+              "description": "Ersetzt {{Date}} in dieser Shape."
+            },
+            "{{Subtitle}}": {
+              "type": "string",
+              "description": "Ersetzt {{Subtitle}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide1_Text1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Items-Sold}}": {
+              "type": "string",
+              "description": "Ersetzt {{Items-Sold}} in dieser Shape."
+            },
+            "{{Market-Share-In-Segment}}": {
+              "type": "string",
+              "description": "Ersetzt {{Market-Share-In-Segment}} in dieser Shape."
+            },
+            "{{Market}}": {
+              "type": "string",
+              "description": "Ersetzt {{Market}} in dieser Shape."
+            },
+            "{{Model-Name}}": {
+              "type": "string",
+              "description": "Ersetzt {{Model-Name}} in dieser Shape."
+            },
+            "{{Price-Range}}": {
+              "type": "string",
+              "description": "Ersetzt {{Price-Range}} in dieser Shape."
+            },
+            "{{Segment}}": {
+              "type": "string",
+              "description": "Ersetzt {{Segment}} in dieser Shape."
+            },
+            "{{Trim-Level}}": {
+              "type": "string",
+              "description": "Ersetzt {{Trim-Level}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide1_Text2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Disclaimer-Data-Source}}": {
+              "type": "string",
+              "description": "Ersetzt {{Disclaimer-Data-Source}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_Text2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Purchase-Investment-Recommendation-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Purchase-Investment-Recommendation-Label}} in dieser Shape."
+            },
+            "{{Purchase-Investment-Recommendation-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Purchase-Investment-Recommendation-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_KPI1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-Overall-Score-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-Overall-Score-Label}} in dieser Shape."
+            },
+            "{{KPI-Overall-Score-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-Overall-Score-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_KPI2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-Range-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-Range-Label}} in dieser Shape."
+            },
+            "{{KPI-Range-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-Range-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_KPI3": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-CostPerKm-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-CostPerKm-Label}} in dieser Shape."
+            },
+            "{{KPI-CostPerKm-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-CostPerKm-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_Table1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Strength-Row1-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Strength-Row1-Value}} in dieser Shape."
+            },
+            "{{Strength-Row2-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Strength-Row2-Value}} in dieser Shape."
+            },
+            "{{Strength-Row3-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Strength-Row3-Value}} in dieser Shape."
+            },
+            "{{Strength-Table-Header}}": {
+              "type": "string",
+              "description": "Ersetzt {{Strength-Table-Header}} in dieser Shape."
+            },
+            "{{Weakness-Row1-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Weakness-Row1-Value}} in dieser Shape."
+            },
+            "{{Weakness-Row2-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Weakness-Row2-Value}} in dieser Shape."
+            },
+            "{{Weakness-Row3-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Weakness-Row3-Value}} in dieser Shape."
+            },
+            "{{Weakness-Table-Header}}": {
+              "type": "string",
+              "description": "Ersetzt {{Weakness-Table-Header}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide2_Text1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Segment-Ranking-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Segment-Ranking-Label}} in dieser Shape."
+            },
+            "{{Segment-Ranking-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Segment-Ranking-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide3_Text1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{CompetitorA-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorA-Label}} in dieser Shape."
+            },
+            "{{CompetitorA-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorA-Value}} in dieser Shape."
+            },
+            "{{CompetitorB-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorB-Label}} in dieser Shape."
+            },
+            "{{CompetitorB-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorB-Value}} in dieser Shape."
+            },
+            "{{CompetitorC-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorC-Label}} in dieser Shape."
+            },
+            "{{CompetitorC-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{CompetitorC-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide3_Text2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{C-Level-Takeaway-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{C-Level-Takeaway-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide4_KPI1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Reliability-Score-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Reliability-Score-Label}} in dieser Shape."
+            },
+            "{{Reliability-Score-Risk}}": {
+              "type": "string",
+              "description": "Ersetzt {{Reliability-Score-Risk}} in dieser Shape."
+            },
+            "{{Reliability-Score-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Reliability-Score-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide4_KPI2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Safety-Score-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Safety-Score-Label}} in dieser Shape."
+            },
+            "{{Safety-Score-Positioning}}": {
+              "type": "string",
+              "description": "Ersetzt {{Safety-Score-Positioning}} in dieser Shape."
+            },
+            "{{Safety-Score-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Safety-Score-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide4_Table1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{ADAS-Features-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{ADAS-Features-Label}} in dieser Shape."
+            },
+            "{{ADAS-Features-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{ADAS-Features-Value}} in dieser Shape."
+            },
+            "{{Crash-Test-Core-Result-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Crash-Test-Core-Result-Label}} in dieser Shape."
+            },
+            "{{Crash-Test-Core-Result-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Crash-Test-Core-Result-Value}} in dieser Shape."
+            },
+            "{{IIHS-NHTSA-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{IIHS-NHTSA-Label}} in dieser Shape."
+            },
+            "{{IIHS-NHTSA-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{IIHS-NHTSA-Value}} in dieser Shape."
+            },
+            "{{Institutionelle-Scores-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Institutionelle-Scores-Label}} in dieser Shape."
+            },
+            "{{Institutionelle-Scores-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Institutionelle-Scores-Value}} in dieser Shape."
+            },
+            "{{Owner-Feedback-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Owner-Feedback-Label}} in dieser Shape."
+            },
+            "{{Recalls-and-Warranty-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Recalls-and-Warranty-Label}} in dieser Shape."
+            },
+            "{{Recalls-and-Warranty-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Recalls-and-Warranty-Value}} in dieser Shape."
+            },
+            "{{Reliability-Table-Header}}": {
+              "type": "string",
+              "description": "Ersetzt {{Reliability-Table-Header}} in dieser Shape."
+            },
+            "{{Safety-Table-Header}}": {
+              "type": "string",
+              "description": "Ersetzt {{Safety-Table-Header}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide5_Text": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Differentiation-Potential-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Differentiation-Potential-Label}} in dieser Shape."
+            },
+            "{{Differentiation-Potential-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Differentiation-Potential-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide6_Table1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{Cost-per-Month-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Cost-per-Month-Label}} in dieser Shape."
+            },
+            "{{Cost-per-Month-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Cost-per-Month-Value}} in dieser Shape."
+            },
+            "{{Depreciation-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{Depreciation-Label}} in dieser Shape."
+            },
+            "{{Depreciation-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{Depreciation-Value}} in dieser Shape."
+            },
+            "{{TCO-5Y-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{TCO-5Y-Label}} in dieser Shape."
+            },
+            "{{TCO-5Y-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{TCO-5Y-Value}} in dieser Shape."
+            },
+            "{{TCO-Index-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{TCO-Index-Label}} in dieser Shape."
+            },
+            "{{TCO-Index-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{TCO-Index-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide6_KPI1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-TCO-Index-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-TCO-Index-Label}} in dieser Shape."
+            },
+            "{{KPI-TCO-Index-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-TCO-Index-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide6_KPI2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-TCO-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-TCO-Label}} in dieser Shape."
+            },
+            "{{KPI-TCO-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-TCO-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        },
+        "Slide6_KPI3": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "{{KPI-CostPerKm-Label}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-CostPerKm-Label}} in dieser Shape."
+            },
+            "{{KPI-CostPerKm-Value}}": {
+              "type": "string",
+              "description": "Ersetzt {{KPI-CostPerKm-Value}} in dieser Shape."
+            }
+          },
+          "minProperties": 1
+        }
+      },
+      "minProperties": 1
+    },
+    "charts": {
+      "type": "array",
+      "description": "Optional: Liste von Diagramm-Updates (jeweils POST /api/FillChart mit shapeName, categories, series).",
+      "items": {
+        "$ref": "#/definitions/chartInput"
+      }
+    },
+    "images": {
+      "type": "object",
+      "description": "Optional: Bilder ersetzen (ReplaceImages). Key = shapeName des Bildes, Value beschreibt die Quelle. In der API werden die Dateien als multipart-Felder hochgeladen (Feldname=shapeName).",
+      "additionalProperties": {
+        "$ref": "#/definitions/imageInput"
+      }
+    }
+  },
+  "definitions": {
+    "chartInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shapeName",
+        "categories",
+        "series"
+      ],
+      "properties": {
+        "shapeName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name der Chart-Shape (Selection Pane)."
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "values"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "values": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "imageInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Beschreibt, woher das Bild kommt. Bei ReplaceImages musst du die Datei tatsächlich als multipart-Dateifeld senden; dieses Objekt dient als Steuerdaten für deinen Flow/Agent.",
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "Dateiname/Attachment-Name, der als multipart-Dateifeld hochgeladen wird."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional: URL, von der dein Flow das Bild zuerst herunterlädt."
+        },
+        "contentType": {
+          "type": "string",
+          "description": "Optional: MIME-Type (image/png, image/jpeg, …)."
+        },
+        "altText": {
+          "type": "string",
+          "description": "Optional: Alt-Text/Caption (wird nicht automatisch ins PPTX geschrieben)."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "fileName"
+          ]
+        },
+        {
+          "required": [
+            "url"
+          ]
+        }
+      ]
+    }
+  },
+  "x-templateInfo": {
+    "slideCount": 6,
+    "placeholdersDetected": 71,
+    "chartShapes": [
+      {
+        "slide": 3,
+        "shapeName": "Slide3_Chart1",
+        "categories": null,
+        "seriesNames": []
+      },
+      {
+        "slide": 5,
+        "shapeName": "Slide5_Chart1",
+        "categories": null,
+        "seriesNames": []
+      },
+      {
+        "slide": 6,
+        "shapeName": "Slide6_Chart1",
+        "categories": [
+          "Depreciation",
+          "Energy/Fuel",
+          "Insurance",
+          "Maintenance",
+          "Tax"
+        ],
+        "seriesNames": [
+          "Rating"
+        ]
+      }
+    ],
+    "pictureShapes": [
+      {
+        "slide": 1,
+        "shapeName": "Slide1_Picture1"
+      }
+    ],
+    "placeholdersBySlide": {
+      "1": [
+        {
+          "shapeName": "Slide1_Subtitle",
+          "placeholders": [
+            "{{Date}}",
+            "{{Subtitle}}"
+          ]
+        },
+        {
+          "shapeName": "Slide1_Text1",
+          "placeholders": [
+            "{{Items-Sold}}",
+            "{{Market-Share-In-Segment}}",
+            "{{Market}}",
+            "{{Model-Name}}",
+            "{{Price-Range}}",
+            "{{Segment}}",
+            "{{Trim-Level}}"
+          ]
+        },
+        {
+          "shapeName": "Slide1_Text2",
+          "placeholders": [
+            "{{Disclaimer-Data-Source}}"
+          ]
+        },
+        {
+          "shapeName": "Slide1_Titel",
+          "placeholders": [
+            "{{Title}}"
+          ]
+        }
+      ],
+      "2": [
+        {
+          "shapeName": "Slide2_KPI1",
+          "placeholders": [
+            "{{KPI-Overall-Score-Label}}",
+            "{{KPI-Overall-Score-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide2_KPI2",
+          "placeholders": [
+            "{{KPI-Range-Label}}",
+            "{{KPI-Range-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide2_KPI3",
+          "placeholders": [
+            "{{KPI-CostPerKm-Label}}",
+            "{{KPI-CostPerKm-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide2_Table1",
+          "placeholders": [
+            "{{Strength-Row1-Value}}",
+            "{{Strength-Row2-Value}}",
+            "{{Strength-Row3-Value}}",
+            "{{Strength-Table-Header}}",
+            "{{Weakness-Row1-Value}}",
+            "{{Weakness-Row2-Value}}",
+            "{{Weakness-Row3-Value}}",
+            "{{Weakness-Table-Header}}"
+          ]
+        },
+        {
+          "shapeName": "Slide2_Text1",
+          "placeholders": [
+            "{{Segment-Ranking-Label}}",
+            "{{Segment-Ranking-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide2_Text2",
+          "placeholders": [
+            "{{Purchase-Investment-Recommendation-Label}}",
+            "{{Purchase-Investment-Recommendation-Value}}"
+          ]
+        }
+      ],
+      "3": [
+        {
+          "shapeName": "Slide3_Text1",
+          "placeholders": [
+            "{{CompetitorA-Label}}",
+            "{{CompetitorA-Value}}",
+            "{{CompetitorB-Label}}",
+            "{{CompetitorB-Value}}",
+            "{{CompetitorC-Label}}",
+            "{{CompetitorC-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide3_Text2",
+          "placeholders": [
+            "{{C-Level-Takeaway-Value}}"
+          ]
+        }
+      ],
+      "4": [
+        {
+          "shapeName": "Slide4_KPI1",
+          "placeholders": [
+            "{{Reliability-Score-Label}}",
+            "{{Reliability-Score-Risk}}",
+            "{{Reliability-Score-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide4_KPI2",
+          "placeholders": [
+            "{{Safety-Score-Label}}",
+            "{{Safety-Score-Positioning}}",
+            "{{Safety-Score-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide4_Table1",
+          "placeholders": [
+            "{{ADAS-Features-Label}}",
+            "{{ADAS-Features-Value}}",
+            "{{Crash-Test-Core-Result-Label}}",
+            "{{Crash-Test-Core-Result-Value}}",
+            "{{IIHS-NHTSA-Label}}",
+            "{{IIHS-NHTSA-Value}}",
+            "{{Institutionelle-Scores-Label}}",
+            "{{Institutionelle-Scores-Value}}",
+            "{{Owner-Feedback-Label}}",
+            "{{Recalls-and-Warranty-Label}}",
+            "{{Recalls-and-Warranty-Value}}",
+            "{{Reliability-Table-Header}}",
+            "{{Safety-Table-Header}}"
+          ]
+        }
+      ],
+      "5": [
+        {
+          "shapeName": "Slide5_Text",
+          "placeholders": [
+            "{{Differentiation-Potential-Label}}",
+            "{{Differentiation-Potential-Value}}"
+          ]
+        }
+      ],
+      "6": [
+        {
+          "shapeName": "Slide6_KPI1",
+          "placeholders": [
+            "{{KPI-TCO-Index-Label}}",
+            "{{KPI-TCO-Index-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide6_KPI2",
+          "placeholders": [
+            "{{KPI-TCO-Label}}",
+            "{{KPI-TCO-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide6_KPI3",
+          "placeholders": [
+            "{{KPI-CostPerKm-Label}}",
+            "{{KPI-CostPerKm-Value}}"
+          ]
+        },
+        {
+          "shapeName": "Slide6_Table1",
+          "placeholders": [
+            "{{Cost-per-Month-Label}}",
+            "{{Cost-per-Month-Value}}",
+            "{{Depreciation-Label}}",
+            "{{Depreciation-Value}}",
+            "{{TCO-5Y-Label}}",
+            "{{TCO-5Y-Value}}",
+            "{{TCO-Index-Label}}",
+            "{{TCO-Index-Value}}"
+          ]
+        }
+      ]
+    }
+  }
+}

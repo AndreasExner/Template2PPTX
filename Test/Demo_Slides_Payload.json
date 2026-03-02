@@ -1,0 +1,80 @@
+{
+  "placeholders": {
+    "Title": "BMW iX3 – Executive Briefing",
+    "Subtitle": "Competitive Benchmark",
+    "Date": "25.02.2026",
+
+    "Overall-Score": "4.2 / 5",
+    "Segment-Ranking": "#3 im D‑SUV EV Segment",
+
+    "Strength_1": "Effiziente Antriebseinheit",
+    "Strength_2": "Solides Dealer-/Service-Netz",
+    "Strength_3": "Gute Restwerte",
+    "Weakness_1": "Ladeleistung unter Best-in-Class",
+    "Weakness_2": "Innenraum wirkt konservativ",
+    "Weakness_3": "Begrenzte OTA-Funktionalität",
+
+    "Purchase-Investment-Recommendation": "Buy (12–18 Monate Haltedauer)",
+    "Disclaimer-Data-Source": "Quellen: Herstellerangaben, Restwertgutachten, Marktdaten 2025",
+
+    "Market": "EU‑DE",
+    "Model-Name": "BMW iX3",
+    "Trim-Level": "M Sport",
+    "Segment": "D‑SUV EV",
+    "Price-Range": "€59k–€72k",
+    "Items-Sold": "23,500 (2025)",
+    "Market-Share-In-Segment": "7.8%",
+
+    "Reliability-Score": "4.1",
+    "Institutional-Scores": "TÜV + DEKRA: oberes Mittelfeld",
+    "Recalls-Warranty": "2 Rückrufe (minor), 3 Jahre Garantie",
+    "Owner‑Feedback": "Positiv: Komfort | Negativ: Ladeplanung",
+    "Safety-Score": "5 Sterne",
+    "Crash-Test-Results": "Euro NCAP 2024: 5★",
+    "IIHS-NHTSA": "Nicht zutreffend (EU)",
+    "ADAS-Coverage": "ACC, LKA, AEB, HWP, Park Assist",
+
+    "Differentiation": "Starkes Infotainment, solide Konnektivität",
+
+    "TCO-Index-Label": "TCO‑Index",
+    "TCO-Index-Value": "78",
+    "TCO-5Y-Label": "TCO (5 Jahre)",
+    "TCO-5Y-Value": "€48,900",
+    "Cost-per-Month-Label": "Kosten/Monat",
+    "Cost-per-Month-Value": "€815",
+    "Depreciation-Label": "Wertverlust",
+    "Depreciation-Value": "€23,500",
+
+    "TCO-Index": "78 Punkte",
+    "TCO": "€48,9k / 5J",
+    "Cost-per-km": "€0,59 / km"
+  },
+  "images": {
+    "HeroImage": "file:///C:/data/images/ix3_hero.png"
+  },
+  "charts": {
+    "ValueForMoney": {
+      "categories": [
+        "Preispositionierung",
+        "Ausstattungsvorteil",
+        "Value‑Rating",
+        "Value‑for‑Money‑Index"
+      ],
+      "series": [
+        { "name": "Rating", "values": [4.3, 2.5, 3.5, 4.5] }
+      ]
+    },
+    "TechnologyEntertainment": {
+      "categories": ["Digital Keys", "Comfort", "Connectivity", "Infotainment"],
+      "series": [
+        { "name": "Scoring", "values": [4.3, 2.5, 3.5, 4.5] }
+      ]
+    },
+    "TCOBreakdown": {
+      "categories": ["Depreciation", "Energy/Fuel", "Insurance", "Maintenance", "Tax"],
+      "series": [
+        { "name": "Anteil", "values": [29, 19, 15, 19, 19] }
+      ]
+    }
+  }
+}
