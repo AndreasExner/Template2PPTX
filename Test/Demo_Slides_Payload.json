@@ -76,5 +76,22 @@
         { "name": "Anteil", "values": [29, 19, 15, 19, 19] }
       ]
     }
+  },
+  "tables": {
+    "CompetitorComparison": {
+      "headers": {
+        "{{Col1}}": "Modell",
+        "{{Col2}}": "Preis (€)",
+        "{{Col3}}": "Reichweite (km)",
+        "{{Col4}}": "0–100 km/h (s)"
+      },
+      "rows": [
+        ["BMW iX3 M Sport", "67.500", "460", "6.8"],
+        ["Mercedes EQC 400", "69.900", "414", "5.1"],
+        ["Audi Q4 e-tron 50", "52.900", "488", "6.2"],
+        ["Tesla Model Y LR", "49.990", "533", "5.0"],
+        ["Volvo XC40 Recharge", "48.650", "418", "4.9"]
+      ]
+    }
   }
 }

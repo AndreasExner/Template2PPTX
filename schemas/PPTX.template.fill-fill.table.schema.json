@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FillTable",
+  "description": "POST /api/FillTable — Fills a table in a PPTX template with dynamic data rows. The template must contain a table (inside a GraphicFrame) with a header row. Column count and header placeholders are defined in the template. Send as multipart/form-data with a 'template' file field (.pptx) and a 'tableData' text field containing this JSON.",
+  "type": "object",
+  "required": ["shapeName", "rows"],
+  "additionalProperties": false,
+  "properties": {
+    "shapeName": {
+      "type": "string",
+      "description": "The name of the table shape on the slide (visible in PowerPoint's Selection Pane, e.g. 'Table 1' or 'Tabelle 3'). Case-insensitive matching.",
+      "minLength": 1
+    },
+    "headers": {
+      "type": "object",
+      "description": "Optional placeholder-to-value mapping for the header row (row 0). Each key is a placeholder string (e.g. '{{Col1}}') and the value is the replacement text.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "rows": {
+      "type": "array",
+      "description": "Data rows to insert into the table. Each row is an array of strings with the same length as the number of columns in the template table.",
+      "items": {
+        "type": "array",
+        "description": "One row of cell values. The order matches the column order in the template.",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      },
+      "minItems": 1
+    }
+  },
+  "examples": [
+    {
+      "shapeName": "Table 1",
+      "headers": {
+        "{{Col1}}": "Name",
+        "{{Col2}}": "Score",
+        "{{Col3}}": "Status"
+      },
+      "rows": [
+        ["Alice", "42", "Active"],
+        ["Bob", "17", "Inactive"],
+        ["Charlie", "91", "Active"]
+      ]
+    }
+  ]
+}

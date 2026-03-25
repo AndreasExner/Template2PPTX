@@ -110,9 +110,50 @@
         }
       }
     },
-    "/ReplaceImages": {
+    "/FillTable": {
       "post": {
-        "operationId": "ReplaceImages",
+        "operationId": "FillTable",
+        "summary": "Fill a table with dynamic data rows",
+        "description": "Fills a table in a PPTX template with dynamic data rows. The table is identified by its shape name (visible in PowerPoint's Selection Pane). The template defines the column count and header placeholders. If the template table has a second row (row 1), its formatting is used as a style template for all new data rows. Header placeholders can optionally be replaced. Shape name matching is case-insensitive.",
+        "parameters": [
+          {
+            "name": "template",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The .pptx template file containing the table to fill."
+          },
+          {
+            "name": "tableData",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "JSON object with table data. See TableDataInput schema."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The modified .pptx file with table data filled.",
+            "schema": {
+              "type": "file"
+            },
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "attachment; filename=table-filled.pptx"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — missing template, invalid JSON, missing shapeName/rows, shape not found, or corrupt PPTX.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ReplaceImages": {
         "summary": "Replace images in picture shapes by shape name",
         "description": "Replaces images in named picture shapes (p:pic) of a PPTX template. Each uploaded image file's form-field name must match a shape name in the presentation (visible in PowerPoint's Selection Pane). The image is replaced while preserving the exact position and dimensions of the original shape on the slide. Shape name matching is case-insensitive. If shapes are not found, the response log includes a list of all available picture shape names. Supported image formats: PNG, JPEG, GIF, BMP, TIFF, SVG.",
         "parameters": [
@@ -221,6 +262,42 @@
         "Subtitle 2": {
           "{{Subtitle}}": "Finance Department",
           "{{Date}}": "24.02.2026"
+        }
+      }
+    },
+    "TableDataInput": {
+      "type": "object",
+      "required": ["shapeName", "rows"],
+      "properties": {
+        "shapeName": {
+          "type": "string",
+          "description": "The name of the table shape on the slide (visible in PowerPoint's Selection Pane). Case-insensitive matching.",
+          "example": "Table 1"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Optional placeholder-to-value mapping for the header row. Keys are placeholders (e.g. '{{Col1}}'), values are replacement strings.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "{{Col1}}": "Name",
+            "{{Col2}}": "Score"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "description": "Data rows to insert. Each row is an array of strings matching the column order.",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": [
+            ["Alice", "42", "Active"],
+            ["Bob", "17", "Inactive"]
+          ]
         }
       }
     }

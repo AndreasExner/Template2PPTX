@@ -764,4 +764,330 @@ public class HttpTrigger
         }
         return result;
     }
+
+    // =====================================================================
+    // FillTable endpoint
+    // =====================================================================
+
+    /// <summary>
+    /// Input model for table data.
+    /// Example JSON:
+    /// {
+    ///   "shapeName": "Table 1",
+    ///   "headers": { "{{Col1}}": "Name", "{{Col2}}": "Score" },
+    ///   "rows": [
+    ///     ["Alice", "42"],
+    ///     ["Bob",   "17"]
+    ///   ]
+    /// }
+    /// </summary>
+    public class TableDataInput
+    {
+        public string ShapeName { get; set; } = "";
+        public Dictionary<string, string>? Headers { get; set; }
+        public List<List<string>> Rows { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Accepts a multipart/form-data request with:
+    ///   - "template" : the .pptx template file
+    ///   - "tableData" : JSON with shapeName, optional header replacements, and row data
+    /// The template must contain a table (inside a GraphicFrame) whose shape name
+    /// matches "shapeName".  The table should have a header row (row 0) and
+    /// optionally a second "style-template" row (row 1) whose formatting will be
+    /// cloned for every data row.  The column count is defined by the template.
+    /// Returns the modified .pptx file.
+    /// </summary>
+    [Function("FillTable")]
+    public async Task<IActionResult> RunFillTable(
+        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+    {
+        _logger.LogInformation("FillTable function triggered.");
+
+        var form = await req.ReadFormAsync();
+        var templateFile = form.Files.GetFile("template");
+        if (templateFile is null || templateFile.Length == 0)
+            return new BadRequestObjectResult("Please upload a .pptx file as form field 'template'.");
+
+        string? tableDataJson = form["tableData"];
+        if (string.IsNullOrWhiteSpace(tableDataJson))
+            return new BadRequestObjectResult("Please provide a 'tableData' form field with JSON.");
+
+        TableDataInput? tableData;
+        try
+        {
+            tableData = JsonSerializer.Deserialize<TableDataInput>(tableDataJson,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (JsonException ex)
+        {
+            return new BadRequestObjectResult($"Invalid JSON in 'tableData': {ex.Message}");
+        }
+
+        if (tableData is null || tableData.Rows.Count == 0)
+            return new BadRequestObjectResult("tableData must contain at least one row in 'rows'.");
+
+        if (string.IsNullOrWhiteSpace(tableData.ShapeName))
+            return new BadRequestObjectResult("tableData must contain 'shapeName' (the name of the table shape in the slide).");
+
+        var ms = new MemoryStream();
+        await templateFile.CopyToAsync(ms);
+        ms.Position = 0;
+
+        try
+        {
+            using var pptx = PresentationDocument.Open(ms, isEditable: true);
+            var tableResult = FillTableInPresentation(pptx, tableData);
+
+            if (!tableResult.Success)
+                return new BadRequestObjectResult(tableResult.ErrorMessage);
+
+            _logger.LogInformation("Table '{ShapeName}' filled with {RowCount} data rows.",
+                tableData.ShapeName, tableData.Rows.Count);
+        }
+        catch (System.IO.FileFormatException ex)
+        {
+            return new BadRequestObjectResult($"Invalid PPTX file: {ex.Message}");
+        }
+
+        ms.Position = 0;
+        return new FileStreamResult(ms,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation")
+        {
+            FileDownloadName = "table-filled.pptx"
+        };
+    }
+
+    private class FillTableResult
+    {
+        public bool Success { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
+
+    /// <summary>
+    /// Finds a table by shape name across all slides and fills it with dynamic rows.
+    /// The header row (row 0) is kept; its placeholders are replaced if "headers" is provided.
+    /// If the template table has a second row (row 1), it is used as a style template
+    /// for all new data rows and then removed.  Otherwise rows are created with
+    /// minimal formatting cloned from the first cell of the header row.
+    /// </summary>
+    private FillTableResult FillTableInPresentation(PresentationDocument pptx, TableDataInput tableData)
+    {
+        var presentationPart = pptx.PresentationPart;
+        if (presentationPart?.Presentation?.SlideIdList is null)
+            return new FillTableResult { ErrorMessage = "The presentation contains no slides." };
+
+        Drawing.Table? targetTable = null;
+        SlidePart? targetSlidePart = null;
+
+        // Collect all table shape names for error reporting
+        var allTableNames = new List<string>();
+
+        foreach (var slideId in presentationPart.Presentation.SlideIdList.Elements<SlideId>())
+        {
+            var slidePart = (SlidePart)presentationPart.GetPartById(slideId.RelationshipId!);
+            if (slidePart.Slide is null) continue;
+
+            foreach (var gf in slidePart.Slide.Descendants<GraphicFrame>())
+            {
+                var shapeName = gf.NonVisualGraphicFrameProperties?.NonVisualDrawingProperties?.Name?.Value;
+
+                // Check if this graphic frame contains a table (a:tbl)
+                var table = gf.Descendants<Drawing.Table>().FirstOrDefault();
+                if (table is null) continue;
+
+                if (shapeName is not null) allTableNames.Add(shapeName);
+
+                if (string.Equals(shapeName, tableData.ShapeName, StringComparison.OrdinalIgnoreCase))
+                {
+                    targetTable = table;
+                    targetSlidePart = slidePart;
+                    break;
+                }
+            }
+            if (targetTable is not null) break;
+        }
+
+        if (targetTable is null)
+        {
+            var available = allTableNames.Count > 0
+                ? string.Join(", ", allTableNames.Select(n => $"'{n}'"))
+                : "(none)";
+            return new FillTableResult
+            {
+                ErrorMessage = $"No table with shapeName '{tableData.ShapeName}' found. Available table shapes: {available}"
+            };
+        }
+
+        var existingRows = targetTable.Elements<Drawing.TableRow>().ToList();
+        if (existingRows.Count == 0)
+            return new FillTableResult { ErrorMessage = "The table has no rows (not even a header row)." };
+
+        int columnCount = targetTable.TableGrid?.Elements<Drawing.GridColumn>().Count() ?? 0;
+        if (columnCount == 0)
+            return new FillTableResult { ErrorMessage = "The table has no columns defined in its grid." };
+
+        // --- 1. Replace header placeholders (row 0) ---
+        var headerRow = existingRows[0];
+        if (tableData.Headers is not null && tableData.Headers.Count > 0)
+        {
+            foreach (var textElement in headerRow.Descendants<Drawing.Text>())
+            {
+                foreach (var (placeholder, replacement) in tableData.Headers)
+                {
+                    if (textElement.Text?.Contains(placeholder) == true)
+                    {
+                        _logger.LogInformation("Table header: replacing '{Placeholder}' → '{Replacement}'",
+                            placeholder, replacement);
+                        textElement.Text = textElement.Text.Replace(placeholder, replacement);
+                    }
+                }
+            }
+        }
+
+        // --- 2. Determine style template row ---
+        // If row 1 exists, use it as style template; otherwise clone the header style
+        Drawing.TableRow? styleTemplateRow = existingRows.Count > 1 ? existingRows[1] : null;
+
+        // Remove all existing rows except the header
+        for (int i = existingRows.Count - 1; i >= 1; i--)
+        {
+            existingRows[i].Remove();
+        }
+
+        // --- 3. Add data rows ---
+        foreach (var rowData in tableData.Rows)
+        {
+            var newRow = CreateTableRow(
+                styleTemplateRow ?? headerRow,
+                rowData,
+                columnCount,
+                styleTemplateRow is not null);
+            targetTable.AppendChild(newRow);
+        }
+
+        // --- 4. Update table height (optional: distribute row heights evenly) ---
+        // The total table height is defined by the graphic frame's extent.
+        // We distribute it evenly across header + data rows.
+        // Row heights are in EMUs (English Metric Units).
+        var totalRows = 1 + tableData.Rows.Count; // header + data rows
+        long headerHeight = headerRow.Height?.Value ?? 370840L; // default ~1cm
+        long templateRowHeight = styleTemplateRow?.Height?.Value ?? headerHeight;
+
+        foreach (var row in targetTable.Elements<Drawing.TableRow>())
+        {
+            if (row == headerRow) continue;
+            row.Height = templateRowHeight;
+        }
+
+        targetSlidePart!.Slide.Save();
+        return new FillTableResult { Success = true };
+    }
+
+    /// <summary>
+    /// Creates a new table row by cloning either the style-template row or
+    /// the header row, then setting the cell text values.
+    /// </summary>
+    private static Drawing.TableRow CreateTableRow(
+        Drawing.TableRow templateRow, List<string> cellValues, int columnCount, bool isStyleTemplate)
+    {
+        // Deep-clone the template row to preserve all formatting
+        var newRow = (Drawing.TableRow)templateRow.CloneNode(deep: true);
+
+        var cells = newRow.Elements<Drawing.TableCell>().ToList();
+
+        for (int c = 0; c < columnCount; c++)
+        {
+            string value = c < cellValues.Count ? cellValues[c] : "";
+
+            if (c < cells.Count)
+            {
+                // Replace all text in the cell with the new value
+                SetCellText(cells[c], value);
+            }
+            else
+            {
+                // More columns in grid than cells in template row — add a new cell
+                var newCell = c > 0 && cells.Count > 0
+                    ? (Drawing.TableCell)cells[^1].CloneNode(deep: true)
+                    : CreateMinimalTableCell();
+                SetCellText(newCell, value);
+                newRow.AppendChild(newCell);
+            }
+        }
+
+        return newRow;
+    }
+
+    /// <summary>
+    /// Sets the text of a table cell while preserving run-level formatting.
+    /// Keeps the first paragraph and first run, removes all others,
+    /// then sets the text of the remaining run.
+    /// </summary>
+    private static void SetCellText(Drawing.TableCell cell, string text)
+    {
+        var textBody = cell.GetFirstChild<Drawing.TextBody>();
+        if (textBody is null)
+        {
+            textBody = new Drawing.TextBody(
+                new Drawing.BodyProperties(),
+                new Drawing.ListStyle(),
+                new Drawing.Paragraph(new Drawing.Run(new Drawing.Text(text))));
+            cell.AppendChild(textBody);
+            return;
+        }
+
+        var paragraphs = textBody.Elements<Drawing.Paragraph>().ToList();
+
+        // Keep only the first paragraph
+        for (int i = paragraphs.Count - 1; i >= 1; i--)
+            paragraphs[i].Remove();
+
+        var paragraph = paragraphs.FirstOrDefault();
+        if (paragraph is null)
+        {
+            paragraph = new Drawing.Paragraph(new Drawing.Run(new Drawing.Text(text)));
+            textBody.AppendChild(paragraph);
+            return;
+        }
+
+        // Find or create a run
+        var runs = paragraph.Elements<Drawing.Run>().ToList();
+
+        // Remove all runs except the first
+        for (int i = runs.Count - 1; i >= 1; i--)
+            runs[i].Remove();
+
+        var run = runs.FirstOrDefault();
+        if (run is null)
+        {
+            run = new Drawing.Run(new Drawing.Text(text));
+            paragraph.AppendChild(run);
+        }
+        else
+        {
+            var textEl = run.GetFirstChild<Drawing.Text>();
+            if (textEl is not null)
+                textEl.Text = text;
+            else
+                run.AppendChild(new Drawing.Text(text));
+        }
+
+        // Remove any explicit line breaks or fields that were in the template
+        foreach (var br in paragraph.Elements<Drawing.Break>().ToList()) br.Remove();
+        foreach (var fld in paragraph.Elements<Drawing.Field>().ToList()) fld.Remove();
+    }
+
+    /// <summary>
+    /// Creates a minimal table cell with default formatting.
+    /// </summary>
+    private static Drawing.TableCell CreateMinimalTableCell()
+    {
+        return new Drawing.TableCell(
+            new Drawing.TextBody(
+                new Drawing.BodyProperties(),
+                new Drawing.ListStyle(),
+                new Drawing.Paragraph(new Drawing.Run(new Drawing.Text("")))),
+            new Drawing.TableCellProperties());
+    }
 }
