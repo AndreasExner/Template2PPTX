@@ -26,8 +26,8 @@ public partial class HttpTrigger
             "Returns shape names, types, and slide numbers. Use this to discover " +
             "available shapes before calling fill_template, fill_chart, fill_table, or replace_images.")]
         ToolInvocationContext context,
-        [McpToolProperty("templateBase64", "string",
-            "Base64-encoded PPTX template file.")]
+        [McpToolProperty("templateBase64",
+            "Base64-encoded PPTX template file.", true)]
         string templateBase64)
     {
         _logger.LogInformation("MCP list_shapes triggered.");
@@ -114,12 +114,12 @@ public partial class HttpTrigger
             "Supports regular shapes, grouped shapes, and table cells. " +
             "Use list_shapes first to discover available shape names.")]
         ToolInvocationContext context,
-        [McpToolProperty("templateBase64", "string",
-            "Base64-encoded PPTX template file.")]
+        [McpToolProperty("templateBase64",
+            "Base64-encoded PPTX template file.", true)]
         string templateBase64,
-        [McpToolProperty("placeholders", "string",
+        [McpToolProperty("placeholders",
             "JSON object keyed by shape name. Each value is an object of placeholder-to-replacement pairs. " +
-            "Example: {\"Title 1\":{\"{{Title}}\":\"Hello\"},\"Subtitle 2\":{\"{{Sub}}\":\"World\"}}")]
+            "Example: {\"Title 1\":{\"{{Title}}\":\"Hello\"},\"Subtitle 2\":{\"{{Sub}}\":\"World\"}}", true)]
         string placeholders)
     {
         _logger.LogInformation("MCP fill_template triggered.");
@@ -164,14 +164,14 @@ public partial class HttpTrigger
             "Updates both the chart XML cache and the embedded Excel workbook. " +
             "Use list_shapes first to find chart shape names.")]
         ToolInvocationContext context,
-        [McpToolProperty("templateBase64", "string",
-            "Base64-encoded PPTX template file.")]
+        [McpToolProperty("templateBase64",
+            "Base64-encoded PPTX template file.", true)]
         string templateBase64,
-        [McpToolProperty("chartData", "string",
+        [McpToolProperty("chartData",
             "JSON object with chart data. Must contain 'shapeName' (string), " +
             "'categories' (string array), and 'series' (array of {name, values}). " +
             "Example: {\"shapeName\":\"Chart 1\",\"categories\":[\"Q1\",\"Q2\"]," +
-            "\"series\":[{\"name\":\"Sales\",\"values\":[10.5,20.3]}]}")]
+            "\"series\":[{\"name\":\"Sales\",\"values\":[10.5,20.3]}]}", true)]
         string chartData)
     {
         _logger.LogInformation("MCP fill_chart triggered.");
@@ -229,14 +229,14 @@ public partial class HttpTrigger
             "If the template table has a second row, its formatting is used for all data rows. " +
             "Use list_shapes first to find table shape names.")]
         ToolInvocationContext context,
-        [McpToolProperty("templateBase64", "string",
-            "Base64-encoded PPTX template file.")]
+        [McpToolProperty("templateBase64",
+            "Base64-encoded PPTX template file.", true)]
         string templateBase64,
-        [McpToolProperty("tableData", "string",
+        [McpToolProperty("tableData",
             "JSON object with table data. Must contain 'shapeName' (string) and 'rows' (array of string arrays). " +
             "Optionally contains 'headers' (object of placeholder-to-value mappings). " +
             "Example: {\"shapeName\":\"Table 1\",\"headers\":{\"{{Col1}}\":\"Name\",\"{{Col2}}\":\"Score\"}," +
-            "\"rows\":[[\"Alice\",\"42\"],[\"Bob\",\"17\"]]}")]
+            "\"rows\":[[\"Alice\",\"42\"],[\"Bob\",\"17\"]]}", true)]
         string tableData)
     {
         _logger.LogInformation("MCP fill_table triggered.");
@@ -285,13 +285,13 @@ public partial class HttpTrigger
             "Position and dimensions of the original shape are preserved. " +
             "Use list_shapes first to find picture shape names.")]
         ToolInvocationContext context,
-        [McpToolProperty("templateBase64", "string",
-            "Base64-encoded PPTX template file.")]
+        [McpToolProperty("templateBase64",
+            "Base64-encoded PPTX template file.", true)]
         string templateBase64,
-        [McpToolProperty("images", "string",
+        [McpToolProperty("images",
             "JSON object mapping shape names to image data. " +
             "Each value has 'contentType' (e.g. 'image/png') and 'dataBase64' (Base64-encoded image). " +
-            "Example: {\"Picture 3\":{\"contentType\":\"image/png\",\"dataBase64\":\"iVBORw0KGgo...\"}}")]
+            "Example: {\"Picture 3\":{\"contentType\":\"image/png\",\"dataBase64\":\"iVBORw0KGgo...\"}}", true)]
         string images)
     {
         _logger.LogInformation("MCP replace_images triggered.");
