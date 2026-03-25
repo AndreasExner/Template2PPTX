@@ -8,5 +8,12 @@
             },
             "enableLiveMetricsFilters": true
         }
+    },
+    "extensions": {
+        "mcp": {
+            "serverName": "Template2PPTX",
+            "serverVersion": "1.0.0",
+            "instructions": "MCP server for filling PowerPoint (PPTX) templates. Provides tools to list shapes, replace text placeholders, fill charts with data, fill tables with dynamic rows, and replace images. All tools accept Base64-encoded PPTX files and return the modified PPTX as Base64. Use list_shapes first to discover available shape names in a template."
+        }
     }
 }

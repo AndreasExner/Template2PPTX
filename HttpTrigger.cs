@@ -12,7 +12,7 @@ using Drawing = DocumentFormat.OpenXml.Drawing;
 
 namespace Template2PPTX.Function;
 
-public class HttpTrigger
+public partial class HttpTrigger
 {
     private readonly ILogger<HttpTrigger> _logger;
 
